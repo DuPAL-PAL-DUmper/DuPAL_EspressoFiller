@@ -24,24 +24,24 @@ public class TableParser {
             if(line.length() == 0) continue;
 
             if(line.startsWith(".e")) break; // This is the footer
-            else if(line.startsWith(".i")) {
+            else if(line.startsWith(".i ")) {
                 line = line.substring(2).trim();
                 inputs = Integer.parseInt(line);
                 entries = new byte[1 << inputs][];
-            } else if(line.startsWith(".o")) {
+            } else if(line.startsWith(".o ")) {
                 line = line.substring(2).trim();
                 outputs = Integer.parseInt(line);
-            } else if(line.startsWith(".ilb")) {
+            } else if(line.startsWith(".ilb ")) {
                 line = line.substring(4).trim();
                 String[] labels = line.split(" ");
                 assert(labels.length == inputs);
                 input_labels = labels;
-            } else if(line.startsWith(".ob")) {
+            } else if(line.startsWith(".ob ")) {
                 line = line.substring(3).trim();
                 String[] labels = line.split(" ");
                 assert(labels.length == outputs);
                 output_labels = labels;
-            } else if(line.startsWith(".phase")) {
+            } else if(line.startsWith(".phase ")) {
                 line = line.substring(6).trim();
                 assert(line.length() == outputs);
                 phase = new boolean[outputs];
