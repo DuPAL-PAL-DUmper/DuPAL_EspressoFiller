@@ -11,6 +11,8 @@ public class EspressoTable {
     public EspressoTable(final int inputs, final int outputs, final String[] input_labels, final String[] output_labels, final boolean[] phase, final byte[][] entries) {
         assert(inputs == input_labels.length);
         assert(outputs == output_labels.length);
+        assert((1<<inputs) == entries.length);
+        assert(phase.length == outputs);
 
         this.inputs = inputs;
         this.outputs = outputs;
@@ -44,6 +46,14 @@ public class EspressoTable {
         strBuf.append('\n');
 
         // Entries
+        for(int idx = 0; idx < entries.length; idx++) {
+            if(entries[idx] != null) {
+                for(int b_idx = 0; b_idx < inputs; b_idx++) strBuf.append((char)(((idx >> b_idx) & 0x01) + 0x30));
+                strBuf.append(' ');
+                for(byte e : entries[idx]) strBuf.append(e == 0 ? '0' : ((e > 0) ? '1' : '-'));
+                strBuf.append('\n');
+            }
+        }
 
         // Footer
         strBuf.append(".e\n");
