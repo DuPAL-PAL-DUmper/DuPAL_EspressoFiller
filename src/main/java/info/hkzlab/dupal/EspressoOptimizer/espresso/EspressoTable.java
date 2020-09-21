@@ -19,4 +19,34 @@ public class EspressoTable {
         this.phase = phase;
         this.entries = entries;
     }
+
+    public String toString() {
+        StringBuffer strBuf = new StringBuffer();
+
+        // IOs
+        strBuf.append(".i " + inputs + "\n");
+        strBuf.append(".o " + outputs + "\n");
+
+        // Labels
+        strBuf.append(".ilb ");
+        for(String label : input_labels) strBuf.append(label + " ");
+        strBuf.append('\n');
+        
+        strBuf.append(".ob ");
+        for(String label : output_labels) strBuf.append(label + " ");
+        strBuf.append('\n');
+
+        // Phase
+        strBuf.append(".phase ");
+        for(boolean p : phase) strBuf.append(p ? '1' : '0');
+        strBuf.append('\n');
+
+        strBuf.append('\n');
+
+        // Entries
+
+        // Footer
+        strBuf.append(".e\n");
+        return strBuf.toString();
+    }
 }
