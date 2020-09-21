@@ -78,7 +78,7 @@ public class TableParser {
             }
         }
         
-        return null;
+        return new EspressoTable(inputs, outputs, input_labels, output_labels, phase, entries);
     }
 
     private static int[] getAddresses(int base, int dontcare_mask) {
