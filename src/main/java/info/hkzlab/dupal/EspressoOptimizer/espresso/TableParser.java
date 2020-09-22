@@ -24,6 +24,7 @@ public class TableParser {
             if(line.length() == 0) continue;
 
             if(line.startsWith(".e")) break; // This is the footer
+            else if(line.startsWith("#")) continue;
             else if(line.startsWith(".i ")) {
                 line = line.substring(2).trim();
                 inputs = Integer.parseInt(line);

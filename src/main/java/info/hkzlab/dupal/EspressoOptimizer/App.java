@@ -9,6 +9,7 @@ import org.slf4j.*;
 
 import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable;
 import info.hkzlab.dupal.EspressoOptimizer.espresso.TableParser;
+import info.hkzlab.dupal.EspressoOptimizer.espresso.optimizer.SimpleOptimizer;
 
 public class App {
     private final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -43,6 +44,10 @@ public class App {
             logger.error("Failed reading table from file " + inFile);
             return;
         }
+
+        logger.info("Read table.");
+
+        (new SimpleOptimizer()).optimizeTable(table, "");
     }
 
     private static void parseArgs(String[] args) {

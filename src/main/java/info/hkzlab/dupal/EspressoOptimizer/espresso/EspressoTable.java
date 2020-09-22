@@ -59,4 +59,8 @@ public class EspressoTable {
         strBuf.append(".e\n");
         return strBuf.toString();
     }
+
+    public EspressoTable copyTable() {
+        return new EspressoTable(inputs, outputs, input_labels.clone(), output_labels.clone(), phase.clone(), entries.clone());
+    }
 }
