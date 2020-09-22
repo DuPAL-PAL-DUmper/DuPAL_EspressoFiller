@@ -21,18 +21,37 @@ public class SimpleOptimizer implements OptimizerInterface {
             logger.error("Optimizing a table with more than one output is not supported");
             return null;
         }
+        
+        EspressoTable tabCopy = table.copyTable();
 
-        ProcessBuilder espressoBuilder = new ProcessBuilder(espressoCmd);
-
-        int lines = 0;
         try {
-            lines = minimizeAndCountLines(table, espressoBuilder.start());
-        } catch (IOException e) {
+            ProcessBuilder espressoBuilder = new ProcessBuilder(espressoCmd);
+            int base_lines = minimizeAndCountLines(table, espressoBuilder.start());
+
+            logger.info("Starting table gets minimized in " + base_lines + " lines.");
+            boolean keepMinimizing = true;
+            while(keepMinimizing) {
+                keepMinimizing = false;
+                for(int idx = 0; idx < tabCopy.entries.length; idx++) {
+                    if(tabCopy.entries[idx] == null) {
+                        logger.info("Attempting optimization at index " + idx);
+                        int new_lines = 0;
+                        tabCopy.entries[idx] = new byte[] { 0 };
+                        new_lines = minimizeAndCountLines(table, espressoBuilder.start());
+                        if(new_lines < base_lines) { keepMinimizing = true; break; }; // we got better, start the cycle again
+                        tabCopy.entries[idx] = new byte[] { 1 };
+                        new_lines = minimizeAndCountLines(table, espressoBuilder.start());
+                        if(new_lines < base_lines) { keepMinimizing = true; break; }; // we got better, start the cycle again
+                        tabCopy.entries[idx] = null; // Leave this alone for now
+                    }
+                }
+            }
+
+        } catch(IOException e) {
             e.printStackTrace();
         }
-        logger.info("got " + lines);
 
-        return table;
+        return tabCopy;
     }
 
     private int minimizeAndCountLines(EspressoTable table, Process espresso) throws IOException {
