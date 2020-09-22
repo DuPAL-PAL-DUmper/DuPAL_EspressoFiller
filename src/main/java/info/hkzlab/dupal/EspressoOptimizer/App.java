@@ -6,6 +6,9 @@ public class App {
     private final static Logger logger = LoggerFactory.getLogger(App.class);
     private final static String version = App.class.getPackage().getImplementationVersion();
 
+    private static String inFile = null;
+    private static String outFile = null;
+
     public static void main( String[] args )
     {
         if (args.length < 2) {
@@ -14,5 +17,12 @@ public class App {
 
             return;
         }
+
+        parseArgs(args);
+    }
+
+    private static void parseArgs(String[] args) {
+        inFile = args[0];
+        outFile = args[1];
     }
 }
