@@ -1,6 +1,14 @@
 package info.hkzlab.dupal.EspressoOptimizer;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import org.slf4j.*;
+
+import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable;
+import info.hkzlab.dupal.EspressoOptimizer.espresso.TableParser;
 
 public class App {
     private final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -9,16 +17,32 @@ public class App {
     private static String inFile = null;
     private static String outFile = null;
 
-    public static void main( String[] args )
-    {
+    public static void main(String[] args) {
+        EspressoTable table = null;
+        logger.info("Espresso Optimizer v" + version);
+
         if (args.length < 2) {
-            logger.error("Wrong number of arguments passed.\n"
-                    + "espresso_optimizer <input_file> <output_file>\n");
+            logger.error("Wrong number of arguments passed.\n" + "espresso_optimizer <input_file> <output_file>\n");
 
             return;
         }
 
         parseArgs(args);
+
+        logger.info("main() -> Reading table from " + inFile);
+        
+        try {
+            table = TableParser.readTableFromBuffer(new BufferedReader(new FileReader(inFile)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(table == null) {
+            logger.error("Failed reading table from file " + inFile);
+            return;
+        }
     }
 
     private static void parseArgs(String[] args) {
