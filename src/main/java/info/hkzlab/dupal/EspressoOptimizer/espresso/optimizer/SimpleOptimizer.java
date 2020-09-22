@@ -30,10 +30,12 @@ public class SimpleOptimizer implements OptimizerInterface {
 
             logger.info("Starting table gets minimized in " + base_lines + " lines.");
             boolean keepMinimizing = true;
+            int firstEmpty = 0;
             while(keepMinimizing) {
                 keepMinimizing = false;
-                for(int idx = 0; idx < tabCopy.entries.length; idx++) {
+                for(int idx = firstEmpty; idx < tabCopy.entries.length; idx++) {
                     if(tabCopy.entries[idx] == null) {
+                        firstEmpty = idx;
                         int reference_lines = minimizeAndCountLines(tabCopy, espressoBuilder.start());
 
                         logger.info("Attempting optimization at index " + idx);
