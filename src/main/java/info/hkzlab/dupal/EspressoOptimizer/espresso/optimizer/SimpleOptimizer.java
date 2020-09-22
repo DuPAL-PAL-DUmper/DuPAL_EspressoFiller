@@ -34,14 +34,31 @@ public class SimpleOptimizer implements OptimizerInterface {
                 keepMinimizing = false;
                 for(int idx = 0; idx < tabCopy.entries.length; idx++) {
                     if(tabCopy.entries[idx] == null) {
+                        int reference_lines = minimizeAndCountLines(tabCopy, espressoBuilder.start());
+
                         logger.info("Attempting optimization at index " + idx);
-                        int new_lines = 0;
+                        int nl_0, nl_1;
                         tabCopy.entries[idx] = new byte[] { 0 };
-                        new_lines = minimizeAndCountLines(table, espressoBuilder.start());
-                        if(new_lines < base_lines) { keepMinimizing = true; break; }; // we got better, start the cycle again
+                        nl_0 = minimizeAndCountLines(tabCopy, espressoBuilder.start());
+                        logger.info("0 -> new lines " + nl_0);
                         tabCopy.entries[idx] = new byte[] { 1 };
-                        new_lines = minimizeAndCountLines(table, espressoBuilder.start());
-                        if(new_lines < base_lines) { keepMinimizing = true; break; }; // we got better, start the cycle again
+                        nl_1 = minimizeAndCountLines(tabCopy, espressoBuilder.start());
+                        logger.info("1 -> new lines " + nl_1);
+
+                        tabCopy.entries[idx] = null;
+                        if(nl_0 <= nl_1) {
+                            if(nl_0 <= reference_lines) {
+                                tabCopy.entries[idx] = new byte[] {0};
+                                keepMinimizing = true;
+                                break;
+                            }
+                        } else {
+                            if(nl_0 <= reference_lines) {
+                                tabCopy.entries[idx] = new byte[] {1};
+                                keepMinimizing = true;
+                                break;
+                            }
+                        }
                         tabCopy.entries[idx] = null; // Leave this alone for now
                     }
                 }
