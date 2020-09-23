@@ -2,8 +2,11 @@ package info.hkzlab.dupal.EspressoOptimizer;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.slf4j.*;
 
@@ -18,7 +21,7 @@ public class App {
     private static String inFile = null;
     private static String outFile = null;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         EspressoTable table = null;
         logger.info("Espresso Optimizer v" + version);
 
@@ -47,11 +50,29 @@ public class App {
 
         logger.info("Read table.");
 
-        (new SimpleOptimizer()).optimizeTable(table, "");
+        EspressoTable nuTab = (new SimpleOptimizer()).optimizeTable(table, "");
+
+        saveTableToFile(nuTab, outFile);
     }
 
     private static void parseArgs(String[] args) {
         inFile = args[0];
         outFile = args[1];
+    }
+
+    private static void saveTableToFile(EspressoTable table, String outFile) throws IOException {
+        FileOutputStream fout = null;
+
+        try {
+            fout = new FileOutputStream(outFile);
+
+            fout.write(table.toString().getBytes(StandardCharsets.US_ASCII));
+            
+            fout.flush();
+            fout.close();
+        } catch(IOException e) {
+            logger.error("Error printing out the registered outputs table (not including outputs).");
+            throw e;
+        }
     }
 }

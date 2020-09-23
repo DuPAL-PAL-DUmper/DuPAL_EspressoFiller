@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
+import javax.swing.text.PlainDocument;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +29,12 @@ public class SimpleOptimizer implements OptimizerInterface {
         try {
             ProcessBuilder espressoBuilder = new ProcessBuilder(espressoCmd);
             int base_lines = minimizeAndCountLines(table, espressoBuilder.start());
+            int tot_holes = 0;
+            int plugged_holes = 0;
 
-            logger.info("Starting table gets minimized in " + base_lines + " lines.");
+            for(byte[] entry : table.entries) if(entry == null) tot_holes++;
+
+            logger.info("Starting table gets minimized in " + base_lines + " lines, has " + tot_holes + " holes in table");
             boolean keepMinimizing = true;
             int firstEmpty = 0;
             while(keepMinimizing) {
@@ -61,7 +67,11 @@ public class SimpleOptimizer implements OptimizerInterface {
                                 break;
                             }
                         }
-                        tabCopy.entries[idx] = null; // Leave this alone for now
+
+                        if(tabCopy.entries[idx] != null) {
+                            plugged_holes++;
+                            logger.info("Plugging holes... " + plugged_holes + "/" + tot_holes);
+                        }
                     }
                 }
             }
