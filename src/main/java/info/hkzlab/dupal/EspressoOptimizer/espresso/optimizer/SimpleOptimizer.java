@@ -57,7 +57,7 @@ public class SimpleOptimizer implements OptimizerInterface {
                         if(nl_0 <= nl_1) {
                             if(nl_0 <= reference_lines) tabCopy.entries[idx] = new byte[] {0};
                         } else {
-                            if(nl_0 <= reference_lines) tabCopy.entries[idx] = new byte[] {1};
+                            if(nl_1 <= reference_lines) tabCopy.entries[idx] = new byte[] {1};
                         }
 
                         if(tabCopy.entries[idx] != null) {
