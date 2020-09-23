@@ -44,7 +44,7 @@ public class SimpleOptimizer implements OptimizerInterface {
                         firstEmpty = idx;
                         int reference_lines = minimizeAndCountLines(tabCopy, espressoBuilder.start());
 
-                        logger.info("Attempting optimization at index " + idx);
+                        logger.info("Attempting optimization at index " + idx + " reference lines " + reference_lines);
                         int nl_0, nl_1;
                         tabCopy.entries[idx] = new byte[] { 0 };
                         nl_0 = minimizeAndCountLines(tabCopy, espressoBuilder.start());
@@ -55,22 +55,16 @@ public class SimpleOptimizer implements OptimizerInterface {
 
                         tabCopy.entries[idx] = null;
                         if(nl_0 <= nl_1) {
-                            if(nl_0 <= reference_lines) {
-                                tabCopy.entries[idx] = new byte[] {0};
-                                keepMinimizing = true;
-                                break;
-                            }
+                            if(nl_0 <= reference_lines) tabCopy.entries[idx] = new byte[] {0};
                         } else {
-                            if(nl_0 <= reference_lines) {
-                                tabCopy.entries[idx] = new byte[] {1};
-                                keepMinimizing = true;
-                                break;
-                            }
+                            if(nl_0 <= reference_lines) tabCopy.entries[idx] = new byte[] {1};
                         }
 
                         if(tabCopy.entries[idx] != null) {
                             plugged_holes++;
                             logger.info("Plugging holes... " + plugged_holes + "/" + tot_holes);
+                                keepMinimizing = true;
+                                break;
                         }
                     }
                 }
