@@ -6,12 +6,11 @@ public class EspressoTable {
     public final String[] input_labels;
     public final String[] output_labels;
     public final boolean[] phase;
-    public final byte[][] entries;
+    public final EspressoTableEntry[] entries;
 
-    public EspressoTable(final int inputs, final int outputs, final String[] input_labels, final String[] output_labels, final boolean[] phase, final byte[][] entries) {
+    public EspressoTable(final int inputs, final int outputs, final String[] input_labels, final String[] output_labels, final boolean[] phase, final EspressoTableEntry[] entries) {
         assert(inputs == input_labels.length);
         assert(outputs == output_labels.length);
-        assert((1<<inputs) == entries.length);
         assert(phase.length == outputs);
 
         this.inputs = inputs;
@@ -48,9 +47,9 @@ public class EspressoTable {
         // Entries
         for(int idx = 0; idx < entries.length; idx++) {
             if(entries[idx] != null) {
-                for(int b_idx = 0; b_idx < inputs; b_idx++) strBuf.append((char)(((idx >> b_idx) & 0x01) + 0x30));
+                for(byte e : entries[idx].in) strBuf.append(e == 0 ? '0' : ((e > 0) ? '1' : '-'));
                 strBuf.append(' ');
-                for(byte e : entries[idx]) strBuf.append(e == 0 ? '0' : ((e > 0) ? '1' : '-'));
+                for(byte e : entries[idx].out) strBuf.append(e == 0 ? '0' : ((e > 0) ? '1' : '-'));
                 strBuf.append('\n');
             }
         }
@@ -62,5 +61,15 @@ public class EspressoTable {
 
     public EspressoTable copyTable() {
         return new EspressoTable(inputs, outputs, input_labels.clone(), output_labels.clone(), phase.clone(), entries.clone());
+    }
+
+    public static class EspressoTableEntry {
+        public byte[] in;
+        public byte[] out;
+
+        public EspressoTableEntry(final int in_pins, final int out_pins) {
+            in = new byte[in_pins];
+            out = new byte[out_pins];
+        }
     }
 }

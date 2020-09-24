@@ -41,38 +41,4 @@ public class TableParserTest {
 
         assertEquals("Should correctly parse a valid Espresso table", inputTable, outTable);
     }
-
-        @Test
-    public void shouldCorrectlyRebuildEspressoTable() throws IOException
-    {
-        String inputTable = ".i 3\n" +
-                   ".o 2\n" +
-                   ".ilb i1 i2 i3 \n" + 
-                   ".ob o1 o2 \n" +
-                   ".phase 01\n" +
-                   "\n" +
-                   "--- 00\n" +
-                   ".e\n";
-        
-        String expectedTable = ".i 3\n" +
-                               ".o 2\n" +
-                               ".ilb i1 i2 i3 \n" + 
-                               ".ob o1 o2 \n" +
-                               ".phase 01\n" +
-                               "\n" +
-                               "000 00\n" +
-                               "100 00\n" +
-                               "010 00\n" +
-                               "110 00\n" +
-                               "001 00\n" +
-                               "101 00\n" +
-                               "011 00\n" +
-                               "111 00\n" +
-                               ".e\n";
-
-        BufferedReader bufr = new BufferedReader(new StringReader(inputTable));
-        String outTable = TableParser.readTableFromBuffer(bufr).toString();
-
-        assertEquals("Should correctly rebuild an Espresso table with 'don't care' inputs", expectedTable, outTable);
-    }
 }

@@ -2,7 +2,9 @@ package info.hkzlab.dupal.EspressoOptimizer.espresso;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable.EspressoTableEntry;
 import info.hkzlab.dupal.EspressoOptimizer.utilities.BitUtils;
 
 public class TableParser {
@@ -15,7 +17,7 @@ public class TableParser {
         String[] input_labels = null;
         String[] output_labels = null;
         boolean[] phase = null;
-        byte[][] entries = null;
+        ArrayList<EspressoTableEntry> entries = new ArrayList<>();
 
         String line;
         while((line = bufr.readLine()) != null) {
@@ -28,7 +30,6 @@ public class TableParser {
             else if(line.startsWith(".i ")) {
                 line = line.substring(2).trim();
                 inputs = Integer.parseInt(line);
-                entries = new byte[1 << inputs][];
             } else if(line.startsWith(".o ")) {
                 line = line.substring(2).trim();
                 outputs = Integer.parseInt(line);
@@ -54,37 +55,42 @@ public class TableParser {
                     ph_idx++;
                 }
             } else { // Table entry
+                EspressoTableEntry tabEntry = new EspressoTableEntry(inputs, outputs);
+
                 String[] table_entry = line.split(" ");
                 assert(table_entry.length == 2);
                 assert(table_entry[0].length() == inputs);
                 assert(table_entry[1].length() == outputs);
 
-                int entry_idx = 0;
-                int dontcare_mask = 0;
-                byte[] out_val = new byte[outputs];
-
                 int adr_idx = 0;
                 for(char ch : table_entry[0].toCharArray()) {
-                    if(ch == '-') dontcare_mask |= (1 << adr_idx);
-                    else entry_idx |= ((ch == '0') ? 0 : 1) << adr_idx;
+                    if(ch == '-') tabEntry.in[adr_idx] = (byte)-1;
+                    else tabEntry.in[adr_idx] = (byte)((ch == '0') ? 0 : 1);
                     adr_idx++;
                 }
 
                 adr_idx = 0;
                 for(char ch : table_entry[1].toCharArray()) {
-                    out_val[adr_idx] = (byte)((ch == '-') ? -1 : (ch == '0' ? 0 : 1));
+                    if(ch == '-') tabEntry.out[adr_idx] = (byte)-1;
+                    else tabEntry.out[adr_idx] = (byte)((ch == '0') ? 0 : 1);
                     adr_idx++;
                 }
 
-                int[] addresses = getAddresses(entry_idx, dontcare_mask);
-                for(int adr : addresses) entries[adr] = out_val;
+                entries.add(tabEntry);
             }
         }
         
-        return new EspressoTable(inputs, outputs, input_labels, output_labels, phase, entries);
+        return new EspressoTable(inputs, outputs, input_labels, output_labels, phase, entries.toArray(new EspressoTableEntry[entries.size()]));
     }
 
-    private static int[] getAddresses(int base, int dontcare_mask) {
+    public static int[] expandAddress(byte[] input) {
+        int base = 0, dontcare_mask = 0;
+
+        for(int idx = 0; idx < input.length; idx++) {
+            if(input[idx] < 0) dontcare_mask |= (1 << idx);
+            else base |= (input[idx] << idx);
+        }
+
         int maxVal = BitUtils.consolidateBitField(dontcare_mask, dontcare_mask);
         int[] addrs = new int[maxVal + 1];
 
