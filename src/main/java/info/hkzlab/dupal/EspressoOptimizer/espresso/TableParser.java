@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable.EspressoTableEntry;
-import info.hkzlab.dupal.EspressoOptimizer.utilities.BitUtils;
 
 public class TableParser {
     private TableParser() {
@@ -81,23 +80,5 @@ public class TableParser {
         }
         
         return new EspressoTable(inputs, outputs, input_labels, output_labels, phase, entries.toArray(new EspressoTableEntry[entries.size()]));
-    }
-
-    public static int[] expandAddress(byte[] input) {
-        int base = 0, dontcare_mask = 0;
-
-        for(int idx = 0; idx < input.length; idx++) {
-            if(input[idx] < 0) dontcare_mask |= (1 << idx);
-            else base |= (input[idx] << idx);
-        }
-
-        int maxVal = BitUtils.consolidateBitField(dontcare_mask, dontcare_mask);
-        int[] addrs = new int[maxVal + 1];
-
-        for(int idx = 0; idx <= maxVal; idx++) {
-            addrs[idx] = base | BitUtils.scatterBitField(idx, dontcare_mask);
-        }
-
-        return addrs;
     }
 }

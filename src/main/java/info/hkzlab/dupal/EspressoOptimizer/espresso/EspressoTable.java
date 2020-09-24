@@ -1,5 +1,7 @@
 package info.hkzlab.dupal.EspressoOptimizer.espresso;
 
+import info.hkzlab.dupal.EspressoOptimizer.utilities.BitUtils;
+
 public class EspressoTable {
     public final int inputs;
     public final int outputs;
@@ -61,8 +63,37 @@ public class EspressoTable {
         return strBuf.toString();
     }
 
+    public boolean evaluate(int input) {
+        for(int idx = 0; idx < entries.length; idx++) {
+            if(entries[idx] != null) {
+                int[] expEntr = expandAddress(entries[idx].in);
+                for(int entr : expEntr) if(entr == input) return true;
+            }
+        }
+
+        return false;
+    }
+
     public EspressoTable copyTable() {
         return new EspressoTable(inputs, outputs, input_labels.clone(), output_labels.clone(), phase.clone(), entries.clone());
+    }
+
+    public static int[] expandAddress(byte[] input) {
+        int base = 0, dontcare_mask = 0;
+
+        for(int idx = 0; idx < input.length; idx++) {
+            if(input[idx] < 0) dontcare_mask |= (1 << idx);
+            else base |= (input[idx] << idx);
+        }
+
+        int maxVal = BitUtils.consolidateBitField(dontcare_mask, dontcare_mask);
+        int[] addrs = new int[maxVal + 1];
+
+        for(int idx = 0; idx <= maxVal; idx++) {
+            addrs[idx] = base | BitUtils.scatterBitField(idx, dontcare_mask);
+        }
+
+        return addrs;
     }
 
     public static class EspressoTableEntry {

@@ -31,8 +31,8 @@ public class SimpleOptimizer implements OptimizerInterface {
         logger.info("Expanding the original table!");
         for(EspressoTableEntry entry : table.entries) {
             if(entry.out[0] >= 0) { // Ignore the "don't care" ones
-                int[] addresses = TableParser.expandAddress(entry.in);
-                for(int addr : addresses) expandedTable[addr] = entry.out[0]; // We'll be taking only the first one
+                int[] addresses = EspressoTable.expandAddress(entry.in);
+                for(int addr : addresses) expandedTable[addr] = entry.out[0]; // We'll be taking only the first of the outputs
             }
         }
 
