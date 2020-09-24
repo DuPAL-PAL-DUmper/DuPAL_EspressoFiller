@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable;
+import info.hkzlab.dupal.EspressoOptimizer.espresso.TableParser;
+import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable.EspressoTableEntry;
 
 public class SimpleOptimizer implements OptimizerInterface {
     private final static Logger logger = LoggerFactory.getLogger(SimpleOptimizer.class);
@@ -23,12 +25,21 @@ public class SimpleOptimizer implements OptimizerInterface {
         }
         
         ProcessBuilder espressoBuilder = new ProcessBuilder(espressoCmd);
+        byte[][] expandedTable = new byte[1 << table.inputs][];
+
+        logger.info("Expanding the original table!");
+        for(EspressoTableEntry entry : table.entries) {
+            int[] addresses = TableParser.expandAddress(entry.in);
+            for(int addr : addresses) expandedTable[addr] = entry.out;
+        }
 
         try {
+            logger.info("Minimizing the original table!");
             Process espresso = espressoBuilder.start();
             String cmdOut = minimizeTable(table, espresso);
             espresso.destroy();
 
+            EspressoTable minimizedTable = TableParser.readTableFromBuffer(new BufferedReader(new StringReader(cmdOut)));
 
         } catch(IOException e) {
             e.printStackTrace();
