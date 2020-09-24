@@ -26,16 +26,18 @@ public class SimpleOptimizer implements OptimizerInterface {
         }
         
         ProcessBuilder espressoBuilder = new ProcessBuilder(espressoCmd);
-        byte[][] expandedTable = new byte[1 << table.inputs][];
+        Byte[] expandedTable = new Byte[1 << table.inputs];
 
         logger.info("Expanding the original table!");
         for(EspressoTableEntry entry : table.entries) {
-            int[] addresses = TableParser.expandAddress(entry.in);
-            for(int addr : addresses) expandedTable[addr] = entry.out;
+            if(entry.out[0] >= 0) { // Ignore the "don't care" ones
+                int[] addresses = TableParser.expandAddress(entry.in);
+                for(int addr : addresses) expandedTable[addr] = entry.out[0]; // We'll be taking only the first one
+            }
         }
 
         int table_hole = 0;
-        for(byte[] eEntry : expandedTable) if(eEntry == null) table_hole++;
+        for(Byte eEntry : expandedTable) if(eEntry == null) table_hole++;
         logger.info("Expanded into a table with size " + expandedTable.length + " and " + table_hole + " holes.");
 
         try {
