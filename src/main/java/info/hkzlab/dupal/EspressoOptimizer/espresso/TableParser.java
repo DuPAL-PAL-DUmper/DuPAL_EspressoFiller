@@ -32,6 +32,8 @@ public class TableParser {
             } else if(line.startsWith(".o ")) {
                 line = line.substring(2).trim();
                 outputs = Integer.parseInt(line);
+            } else if(line.startsWith(".p ")) {
+                // Ignore
             } else if(line.startsWith(".ilb ")) {
                 line = line.substring(4).trim();
                 String[] labels = line.split(" ");
