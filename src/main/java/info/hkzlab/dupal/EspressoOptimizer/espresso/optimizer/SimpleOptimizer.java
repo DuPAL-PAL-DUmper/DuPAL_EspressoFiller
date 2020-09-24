@@ -27,7 +27,7 @@ public class SimpleOptimizer implements OptimizerInterface {
 
         try {
             Process espresso = espressoBuilder.start();
-            String[] cmdOut = minimizeTable(table, espresso;
+            String cmdOut = minimizeTable(table, espresso);
             espresso.destroy();
 
 
@@ -38,8 +38,8 @@ public class SimpleOptimizer implements OptimizerInterface {
         return null;
     }
 
-    private String[] minimizeTable(EspressoTable table, Process espresso) throws IOException {
-        ArrayList<String> cmdOut = new ArrayList<>();
+    private String minimizeTable(EspressoTable table, Process espresso) throws IOException {
+        StringBuffer strBuf = new StringBuffer();
         String tabStr = table.toString();
 
         OutputStream os = espresso.getOutputStream();
@@ -48,8 +48,8 @@ public class SimpleOptimizer implements OptimizerInterface {
         os.write(tabStr.getBytes(StandardCharsets.US_ASCII));
 
         String line = null;
-        while((line = br.readLine()) != null) cmdOut.add(line);
+        while((line = br.readLine()) != null) strBuf.append(line);
         
-        return cmdOut.toArray(new String[cmdOut.size()]);
+        return strBuf.toString();
     }
 }
