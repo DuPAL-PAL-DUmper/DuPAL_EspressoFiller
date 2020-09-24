@@ -63,7 +63,7 @@ public class EspressoTable {
         return strBuf.toString();
     }
 
-    public boolean evaluate(int input) {
+    public boolean match(int input) {
         for(int idx = 0; idx < entries.length; idx++) {
             if(entries[idx] != null) {
                 int[] expEntr = expandAddress(entries[idx].in);

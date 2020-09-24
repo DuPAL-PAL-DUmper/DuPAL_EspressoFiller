@@ -56,4 +56,38 @@ public class EspressoTableTest
 
         assertEquals("Should generate a correct Espresso table", expected, actual);
     }
+
+    @Test
+    public void shouldCorrectlyMatchEntriesInTable() {
+        EspressoTable table;
+       
+        EspressoTableEntry entries[] = new EspressoTableEntry[] {
+            new EspressoTableEntry(4, 2),
+            new EspressoTableEntry(4, 2),
+            new EspressoTableEntry(4, 2),
+            new EspressoTableEntry(4, 2),
+            new EspressoTableEntry(4, 2),
+            new EspressoTableEntry(4, 2),
+        };
+
+        entries[0].in = new byte[] { 0, 0, 0, -1 };
+        entries[0].out = new byte[] { 0, 1 };
+        entries[1].in = new byte[] { 0, 0, 1, 0};
+        entries[1].out = new byte[] { 1, -1 };
+        entries[2].in = new byte[] { 0, 1, 0, 1};
+        entries[2].out = new byte[] { 0, 1 };
+        entries[3].in = new byte[] { -1, 1, 1, 0};
+        entries[3].out = new byte[] { 0, 1 };
+        entries[4].in = new byte[] { -1, 0, 0, 0};
+        entries[4].out = new byte[] { 0, 0 };
+        entries[5].in = new byte[] { 0, 1, 1, 0};
+        entries[5].out = new byte[] { 1, 0 };
+
+        table = new EspressoTable(4, 2, new String[] {"i1", "i2", "i3", "i4"}, new String[] {"o1", "o2"}, new boolean[] {false , true}, entries);
+
+        assertTrue("Should correctly match input", table.match(0b0000));
+        assertTrue("Should correctly match input", table.match(0b0001));
+        assertTrue("Should correctly match input", table.match(0b0111));
+        assertFalse("Should correctly not match input", table.match(0b0011));
+    }
 }
