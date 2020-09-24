@@ -35,13 +35,13 @@ public class App {
         logger.info("main() -> Reading table from " + inFile);
         
         try {
-            table = TableParser.readTableFromBuffer(new BufferedReader(new FileReader(inFile)));
+            table = TableParser.readTableFromBuffer(new BufferedReader(new FileReader(inFile)), false);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
         if(table == null) {
             logger.error("Failed reading table from file " + inFile);
             return;

@@ -52,7 +52,7 @@ public class EspressoTableTest
                    ".e\n";
 
 
-        actual = (new EspressoTable(4, 2, new String[] {"i1", "i2", "i3", "i4"}, new String[] {"o1", "o2"}, new boolean[] {false , true}, entries)).toString();
+        actual = (new EspressoTable(4, 2, new String[] {"i1", "i2", "i3", "i4"}, new String[] {"o1", "o2"}, new boolean[] {false , true}, entries, false)).toString();
 
         assertEquals("Should generate a correct Espresso table", expected, actual);
     }
@@ -83,7 +83,7 @@ public class EspressoTableTest
         entries[5].in = new byte[] { 0, 1, 1, 0};
         entries[5].out = new byte[] { 1, 0 };
 
-        table = new EspressoTable(4, 2, new String[] {"i1", "i2", "i3", "i4"}, new String[] {"o1", "o2"}, new boolean[] {false , true}, entries);
+        table = new EspressoTable(4, 2, new String[] {"i1", "i2", "i3", "i4"}, new String[] {"o1", "o2"}, new boolean[] {false , true}, entries, false);
 
         assertTrue("Should correctly match input", table.match(0b0000));
         assertTrue("Should correctly match input", table.match(0b0001));

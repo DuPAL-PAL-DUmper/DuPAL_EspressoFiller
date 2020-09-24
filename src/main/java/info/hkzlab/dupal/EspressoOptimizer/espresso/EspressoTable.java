@@ -10,7 +10,7 @@ public class EspressoTable {
     public final boolean[] phase;
     public final EspressoTableEntry[] entries;
 
-    public EspressoTable(final int inputs, final int outputs, final String[] input_labels, final String[] output_labels, final boolean[] phase, final EspressoTableEntry[] entries) {
+    public EspressoTable(final int inputs, final int outputs, final String[] input_labels, final String[] output_labels, final boolean[] phase, final EspressoTableEntry[] entries, boolean expand) {
         assert(inputs == input_labels.length);
         assert(outputs == output_labels.length);
         assert(phase.length == outputs);
@@ -20,7 +20,28 @@ public class EspressoTable {
         this.input_labels = input_labels;
         this.output_labels = output_labels;
         this.phase = phase;
-        this.entries = entries;
+        
+        if(expand) {
+            this.entries = new EspressoTableEntry[1 << inputs];
+
+            for(EspressoTableEntry e : entries) {
+                int[] expEntries = EspressoTable.expandAddress(e.in);
+                for(int ee : expEntries) {
+                    this.entries[ee] = new EspressoTableEntry(inputs, outputs);
+                    for(int idx = 0; idx < this.entries[ee].in.length; idx++) this.entries[ee].in[idx] = (byte)((ee >> idx) & 0x01);
+                    this.entries[ee].out = e.out;
+                }
+            }
+
+            for(int idx = 0; idx < this.entries.length; idx++) {
+                if(this.entries[idx] == null) {
+                    this.entries[idx] = new EspressoTableEntry(inputs, outputs);
+                    for(int o_idx = 0; o_idx < this.entries[idx].out.length; o_idx++) this.entries[idx].out[o_idx] = -1;
+                    for(int i_idx = 0; i_idx < this.entries[idx].in.length; i_idx++) this.entries[idx].in[i_idx] = (byte)((idx >> i_idx) & 0x01);
+                }
+            }
+
+        } else this.entries = entries;
     }
 
     public String toString() {
@@ -75,7 +96,7 @@ public class EspressoTable {
     }
 
     public EspressoTable copyTable() {
-        return new EspressoTable(inputs, outputs, input_labels.clone(), output_labels.clone(), phase.clone(), entries.clone());
+        return new EspressoTable(inputs, outputs, input_labels.clone(), output_labels.clone(), phase.clone(), entries.clone(), false);
     }
 
     public static int[] expandAddress(byte[] input) {

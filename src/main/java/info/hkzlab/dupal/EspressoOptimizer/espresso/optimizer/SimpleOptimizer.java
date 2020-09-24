@@ -50,7 +50,7 @@ public class SimpleOptimizer implements OptimizerInterface {
             String cmdOut = minimizeTable(table, espresso);
             espresso.destroy();
 
-            minimizedTable = TableParser.readTableFromBuffer(new BufferedReader(new StringReader(cmdOut)));
+            minimizedTable = TableParser.readTableFromBuffer(new BufferedReader(new StringReader(cmdOut)), false);
             System.out.println(minimizedTable);
 
         } catch(IOException e) {
