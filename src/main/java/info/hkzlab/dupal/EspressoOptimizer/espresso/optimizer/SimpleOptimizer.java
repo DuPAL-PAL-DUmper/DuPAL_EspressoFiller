@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,8 @@ public class SimpleOptimizer implements OptimizerInterface {
 
     @Override
     public EspressoTable optimizeTable(EspressoTable table, String options) {
+        EspressoTable minimizedTable = null;
+
         if(table.outputs > 1) {
             logger.error("Optimizing a table with more than one output is not supported");
             return null;
@@ -46,14 +50,52 @@ public class SimpleOptimizer implements OptimizerInterface {
             String cmdOut = minimizeTable(table, espresso);
             espresso.destroy();
 
-            EspressoTable minimizedTable = TableParser.readTableFromBuffer(new BufferedReader(new StringReader(cmdOut)));
+            minimizedTable = TableParser.readTableFromBuffer(new BufferedReader(new StringReader(cmdOut)));
             System.out.println(minimizedTable);
 
         } catch(IOException e) {
             e.printStackTrace();
         }
 
-        return null;
+        Arrays.sort(minimizedTable.entries, new Comparator<EspressoTableEntry>(){
+            @Override
+            public int compare(EspressoTableEntry ent_a, EspressoTableEntry ent_b) {
+                int count_a = 0, count_b = 0;
+
+                for(byte i : ent_a.in) if(i >= 0) count_a++;
+                for(byte i : ent_b.in) if(i >= 0) count_b++;
+
+                return Integer.compare(count_b, count_a);
+            }
+        });
+
+        System.out.println(minimizedTable);
+
+        for(int opt_idx = 0; opt_idx < minimizedTable.entries.length; opt_idx++) {
+            boolean good_match = true;
+            EspressoTableEntry entry = minimizedTable.entries[opt_idx];
+            minimizedTable.entries[opt_idx] = null;
+
+            logger.info("Trying to remove entry " + opt_idx);
+
+            for(int idx = 0; idx < expandedTable.length; idx++) {
+                if(expandedTable[idx] != null) {
+                    if(((expandedTable[idx] == 0) && !minimizedTable.match(idx)) ||
+                    (expandedTable[idx] != 0) && minimizedTable.match(idx)) {
+                        logger.error("Error matching at index " + idx);
+                        good_match = false;
+                        break;
+                    }
+                }
+            }
+
+            if(!good_match) { 
+                logger.info("Restoring entry " + opt_idx);
+                minimizedTable.entries[opt_idx] = entry; // Restore the entry
+            }
+        }
+
+        return minimizedTable;
     }
 
     private String minimizeTable(EspressoTable table, Process espresso) throws IOException {

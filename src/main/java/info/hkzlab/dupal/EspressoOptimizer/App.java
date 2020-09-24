@@ -51,6 +51,8 @@ public class App {
 
         EspressoTable nuTab = (new SimpleOptimizer()).optimizeTable(table, "");
 
+        System.out.println(nuTab);
+
         saveTableToFile(nuTab, outFile);
     }
 
