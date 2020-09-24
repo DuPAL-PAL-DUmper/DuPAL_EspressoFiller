@@ -38,9 +38,11 @@ public class EspressoTable {
         strBuf.append('\n');
 
         // Phase
-        strBuf.append(".phase ");
-        for(boolean p : phase) strBuf.append(p ? '1' : '0');
-        strBuf.append('\n');
+            if(phase != null) {
+            strBuf.append(".phase ");
+            for(boolean p : phase) strBuf.append(p ? '1' : '0');
+            strBuf.append('\n');
+        }
 
         strBuf.append('\n');
 

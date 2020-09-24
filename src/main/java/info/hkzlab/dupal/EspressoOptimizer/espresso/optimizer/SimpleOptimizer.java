@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
@@ -33,6 +34,10 @@ public class SimpleOptimizer implements OptimizerInterface {
             for(int addr : addresses) expandedTable[addr] = entry.out;
         }
 
+        int table_hole = 0;
+        for(byte[] eEntry : expandedTable) if(eEntry == null) table_hole++;
+        logger.info("Expanded into a table with size " + expandedTable.length + " and " + table_hole + " holes.");
+
         try {
             logger.info("Minimizing the original table!");
             Process espresso = espressoBuilder.start();
@@ -40,6 +45,7 @@ public class SimpleOptimizer implements OptimizerInterface {
             espresso.destroy();
 
             EspressoTable minimizedTable = TableParser.readTableFromBuffer(new BufferedReader(new StringReader(cmdOut)));
+            System.out.println(minimizedTable);
 
         } catch(IOException e) {
             e.printStackTrace();
@@ -58,7 +64,7 @@ public class SimpleOptimizer implements OptimizerInterface {
         os.write(tabStr.getBytes(StandardCharsets.US_ASCII));
 
         String line = null;
-        while((line = br.readLine()) != null) strBuf.append(line);
+        while((line = br.readLine()) != null) strBuf.append(line+"\n");
         
         return strBuf.toString();
     }
