@@ -10,7 +10,7 @@ public class TableParser {
     private TableParser() {
     };
 
-    public static EspressoTable readTableFromBuffer(BufferedReader bufr, boolean expand) throws IOException {
+    public static EspressoTable readTableFromBuffer(BufferedReader bufr, boolean expand, byte fill_type) throws IOException {
         int inputs = 0;
         int outputs = 0;
         String[] input_labels = null;
@@ -79,6 +79,6 @@ public class TableParser {
             }
         }
         
-        return new EspressoTable(inputs, outputs, input_labels, output_labels, phase, entries.toArray(new EspressoTableEntry[entries.size()]), expand);
+        return new EspressoTable(inputs, outputs, input_labels, output_labels, phase, entries.toArray(new EspressoTableEntry[entries.size()]), expand, fill_type);
     }
 }

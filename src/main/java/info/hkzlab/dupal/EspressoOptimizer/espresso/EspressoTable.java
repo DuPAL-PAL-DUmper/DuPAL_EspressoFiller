@@ -10,7 +10,7 @@ public class EspressoTable {
     public final boolean[] phase;
     public final EspressoTableEntry[] entries;
 
-    public EspressoTable(final int inputs, final int outputs, final String[] input_labels, final String[] output_labels, final boolean[] phase, final EspressoTableEntry[] entries, boolean expand) {
+    public EspressoTable(final int inputs, final int outputs, final String[] input_labels, final String[] output_labels, final boolean[] phase, final EspressoTableEntry[] entries, boolean expand, byte fill_type) {
         assert(inputs == input_labels.length);
         assert(outputs == output_labels.length);
         assert(phase.length == outputs);
@@ -36,7 +36,7 @@ public class EspressoTable {
             for(int idx = 0; idx < this.entries.length; idx++) {
                 if(this.entries[idx] == null) {
                     this.entries[idx] = new EspressoTableEntry(inputs, outputs);
-                    for(int o_idx = 0; o_idx < this.entries[idx].out.length; o_idx++) this.entries[idx].out[o_idx] = -1;
+                    for(int o_idx = 0; o_idx < this.entries[idx].out.length; o_idx++) this.entries[idx].out[o_idx] = fill_type;
                     for(int i_idx = 0; i_idx < this.entries[idx].in.length; i_idx++) this.entries[idx].in[i_idx] = (byte)((idx >> i_idx) & 0x01);
                 }
             }
@@ -96,7 +96,7 @@ public class EspressoTable {
     }
 
     public EspressoTable copyTable() {
-        return new EspressoTable(inputs, outputs, input_labels.clone(), output_labels.clone(), phase.clone(), entries.clone(), false);
+        return new EspressoTable(inputs, outputs, input_labels.clone(), output_labels.clone(), phase.clone(), entries.clone(), false, (byte)-1);
     }
 
     public static int[] expandAddress(byte[] input) {

@@ -11,7 +11,6 @@ import org.slf4j.*;
 
 import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable;
 import info.hkzlab.dupal.EspressoOptimizer.espresso.TableParser;
-import info.hkzlab.dupal.EspressoOptimizer.espresso.optimizer.SimpleOptimizer;
 
 public class App {
     private final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -19,13 +18,14 @@ public class App {
 
     private static String inFile = null;
     private static String outFile = null;
+    private static byte fill_type = -1;
 
     public static void main(String[] args) throws IOException {
         EspressoTable table = null;
         logger.info("Espresso Optimizer v" + version);
 
         if (args.length < 2) {
-            logger.error("Wrong number of arguments passed.\n" + "espresso_optimizer <input_file> <output_file>\n");
+            logger.error("Wrong number of arguments passed.\n" + "espresso_optimizer <input_file> <output_file> [fill_type 0|1]\n");
 
             return;
         }
@@ -35,7 +35,7 @@ public class App {
         logger.info("main() -> Reading table from " + inFile);
         
         try {
-            table = TableParser.readTableFromBuffer(new BufferedReader(new FileReader(inFile)), false);
+            table = TableParser.readTableFromBuffer(new BufferedReader(new FileReader(inFile)), true, fill_type);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -47,18 +47,16 @@ public class App {
             return;
         }
 
-        logger.info("Read table.");
-
-        EspressoTable nuTab = (new SimpleOptimizer()).optimizeTable(table, "");
-
-        System.out.println(nuTab);
-
-        saveTableToFile(nuTab, outFile);
+        saveTableToFile(table, outFile);
     }
 
     private static void parseArgs(String[] args) {
         inFile = args[0];
         outFile = args[1];
+
+        if(args.length > 2) {
+            fill_type = Byte.parseByte(args[2]);
+        }
     }
 
     private static void saveTableToFile(EspressoTable table, String outFile) throws IOException {

@@ -37,7 +37,7 @@ public class TableParserTest {
                    ".e\n";
 
         BufferedReader bufr = new BufferedReader(new StringReader(inputTable));
-        String outTable = TableParser.readTableFromBuffer(bufr, false).toString();
+        String outTable = TableParser.readTableFromBuffer(bufr, false, (byte)-1).toString();
 
         assertEquals("Should correctly parse a valid Espresso table", inputTable, outTable);
     }
