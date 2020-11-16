@@ -1,4 +1,4 @@
-package info.hkzlab.dupal.EspressoOptimizer;
+package info.hkzlab.dupal.EspressoFiller;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,8 +9,8 @@ import java.nio.charset.StandardCharsets;
 
 import org.slf4j.*;
 
-import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable;
-import info.hkzlab.dupal.EspressoOptimizer.espresso.TableParser;
+import info.hkzlab.dupal.EspressoFiller.espresso.EspressoTable;
+import info.hkzlab.dupal.EspressoFiller.espresso.TableParser;
 
 public class App {
     private final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -22,10 +22,10 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         EspressoTable table = null;
-        logger.info("Espresso Optimizer v" + version);
+        logger.info("Espresso Filler v" + version);
 
         if (args.length < 2) {
-            logger.error("Wrong number of arguments passed.\n" + "espresso_optimizer <input_file> <output_file> [fill_type 0|1]\n");
+            logger.error("Wrong number of arguments passed.\n" + "espresso_filler <input_file> <output_file> [fill_type 0|1]\n");
 
             return;
         }

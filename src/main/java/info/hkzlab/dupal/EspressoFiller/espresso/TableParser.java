@@ -1,10 +1,10 @@
-package info.hkzlab.dupal.EspressoOptimizer.espresso;
+package info.hkzlab.dupal.EspressoFiller.espresso;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import info.hkzlab.dupal.EspressoOptimizer.espresso.EspressoTable.EspressoTableEntry;
+import info.hkzlab.dupal.EspressoFiller.espresso.EspressoTable.EspressoTableEntry;
 
 public class TableParser {
     private TableParser() {

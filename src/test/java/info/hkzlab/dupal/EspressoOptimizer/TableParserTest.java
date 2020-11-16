@@ -2,7 +2,7 @@ package info.hkzlab.dupal.EspressoOptimizer;
 
 import org.junit.Test;
 
-import info.hkzlab.dupal.EspressoOptimizer.espresso.TableParser;
+import info.hkzlab.dupal.EspressoFiller.espresso.TableParser;
 
 import static org.junit.Assert.*;
 

@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>info.hkzlab.dupal.EspressoOptimizer</groupId>
-  <artifactId>espresso-optimizer</artifactId>
+  <groupId>info.hkzlab.dupal.EspressoFiller</groupId>
+  <artifactId>espresso-filler</artifactId>
   <version>0.0.1</version>
 
   <name>espresso-optimizer</name>
@@ -69,7 +69,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>info.hkzlab.dupal.EspressoOptimizer.App</mainClass>
+              <mainClass>info.hkzlab.dupal.EspressoFiller.App</mainClass>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>

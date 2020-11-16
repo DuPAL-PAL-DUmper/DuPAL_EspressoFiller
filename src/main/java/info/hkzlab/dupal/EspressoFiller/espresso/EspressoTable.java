@@ -1,6 +1,6 @@
-package info.hkzlab.dupal.EspressoOptimizer.espresso;
+package info.hkzlab.dupal.EspressoFiller.espresso;
 
-import info.hkzlab.dupal.EspressoOptimizer.utilities.BitUtils;
+import info.hkzlab.dupal.EspressoFiller.utilities.BitUtils;
 
 public class EspressoTable {
     public final int inputs;
